@@ -175,7 +175,43 @@ namespace Fusee.Tutorial.Core
 
         public static Mesh CreateCylinder(float radius, float height, int segments)
         {
-            return CreateConeFrustum(radius, radius, height, segments);
+            float3[] verts = new float3[segments+1];    // one vertex per segment and one extra for the center point
+            float3[] norms = new float3[segments+1];    // one normal at each vertex
+            ushort[] tris  = new ushort[segments * 3];  // a triangle per segment. Each triangle is made of three indices
+            
+            float delta = 2 * M.Pi / segments;
+
+            // The center (store at the last position in the vertex array (index 'segments'))
+            verts[segments] = float3.Zero;
+            norms[segments] = float3.UnitY;
+
+            // The first and last point (first point in the list (index 0))
+            verts[0] = new float3(radius, 0, 0);
+            norms[0] = float3.UnitY;
+
+            for (int i = 1; i < segments; i++)
+            {
+                // Create the current point and store it at index i
+                verts[i] = new float3(radius * M.Cos(i * delta), 0, radius * M.Sin(i * delta));
+                norms[i] = float3.UnitY;
+
+                // Stitch the current segment (using the center, the current and the previous point)
+                tris[3*i - 1] = (ushort) segments; // center point
+                tris[3*i - 2] = (ushort) i;        // current segment point
+                tris[3*i - 3] = (ushort) (i-1);    // previous segment point
+            }
+
+            // Stitch the last segment
+            tris[3 * segments - 1] = (ushort)segments;          // center point
+            tris[3 * segments - 2] = (ushort)0;                 // wrap around
+            tris[3 * segments - 3] = (ushort)(segments - 1);    // last segment point
+
+            return new Mesh
+            {
+                Vertices = verts,
+                Normals = norms,
+                Triangles = tris,
+            };
         }
 
         public static Mesh CreateCone(float radius, float height, int segments)
