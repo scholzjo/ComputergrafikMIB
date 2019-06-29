@@ -169,7 +169,6 @@ namespace Fusee.Tutorial.Core
             }
 
             
-
             // Clear the backbuffer
             RC.Clear(ClearFlags.Color | ClearFlags.Depth);
 
