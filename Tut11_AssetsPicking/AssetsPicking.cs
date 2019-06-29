@@ -112,8 +112,6 @@ namespace Fusee.Tutorial.Core
                     _rechtsVorneTransform.Rotation = new float3(0, _rechtsVorneTransform.Rotation.y, rechts_vorne_rotation_z);
                 }
 
-                
-
                 //Diagnostics.Log(rechts_vorne_rotation_y); 
 
                 float links_vorne_rotation_z = _linksVorneTransform.Rotation.z;
